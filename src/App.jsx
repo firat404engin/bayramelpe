@@ -1,34 +1,37 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-// Bileşenler
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Hero from './sections/Hero'
-import About from './sections/About'
-import Skills from './sections/Skills' 
-import Contact from './sections/Contact'
-import Experience from './sections/Experience'
-
-function App() {
-  
-  useEffect(() => {
-    document.documentElement.classList.remove('light')
-    document.documentElement.classList.add('dark')
-  }, [])
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow">
-        <Hero />
-        <About />
-        <Skills />
-        <Experience />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
-  )
+const links = [['about','Hakkımda'],['expertise','Uzmanlık'],['experience','Deneyim'],['work','Çalışmalar'],['contact','İletişim']]
+const roles = [
+  {date:'Eylül 2026 — Hâlen', title:'İş Analisti Uzmanı', company:'MASDAF Makina San. A.Ş.', current:true, text:'İş ihtiyaçlarını, IFS ERP üzerinde sürdürülebilir süreçlere dönüştürüyorum.', bullets:['Departmanların ihtiyaçlarını analiz ederek iş süreçlerinin iyileştirilmesi ve geliştirilmesi için gereksinimleri tanımlıyorum.','IFS ERP son kullanıcı desteği sağlıyor, karşılaşılan sorunları analiz ederek çözüm süreçlerini takip ediyorum.','İş akışlarını ve fonksiyonel ihtiyaçları dokümante ediyor; geliştirme, test ve kullanıcı doğrulama süreçlerinde iş birimleri ile teknik ekipler arasında koordinasyon sağlıyorum.','IFS üzerinden raporlama ve veri analiziyle süreçlerin izlenmesini ve karar alma süreçlerini destekliyorum.']},
+  {date:'Temmuz 2024 — Temmuz 2026',title:'Yazılım Uzmanı',company:'Seranit Granit Seramik Sanayi A.Ş.',text:'Kurumsal uygulamalar, entegrasyonlar ve dijital iş akışları üzerinde çalıştım.',bullets:['IFS ERP kullanıcı desteği ve departman ihtiyaçlarına yönelik raporlama çalışmaları yürüttüm.','B2B bayi portalında ihtiyaç analizi, dokümantasyon, yeni modül ve sayfaların tasarım ve test süreçlerine katkı sağladım.','Lojistik portalı, stok portalı ve banka entegrasyonlu OTS yazılım projelerini hayata geçirdim.','Bimser Synergy CSP ile izin, masraf, avans, satın alma, seyahat, sözleşme ve işe giriş gibi süreçlerin dijitalleştirilmesinde analiz, tasarım ve test çalışmaları yaptım.']},
+  {date:'Kasım 2022 — Temmuz 2024',title:'Yazılım Uzman Yardımcısı',company:'Seranit Granit Seramik Sanayi A.Ş.',text:'ERP süreçleri, kullanıcı ihtiyaçları ve veri akışları üzerine deneyim kazandım.',bullets:['IFS son kullanıcı desteği sundum; rapor geliştirme, revizyon ve yeni rapor taleplerini karşıladım.','Kullanılmayan IFS modüllerinin devreye alınmasında ihtiyaç analizi, süreç kontrolü ve kullanıcı eğitimlerine destek verdim.','IFS entegrasyonlarında veri hazırlama, doğrulama ve test çalışmaları yürüttüm.','B2B portalı, CRM raporlaması ve manuel süreçlerin dijitalleştirilmesi çalışmalarına katkı sağladım.']}
+]
+const expertise = [
+ ['01','İş analizi & süreç tasarımı','İhtiyacı anlamak, doğru akışı kurmak.',['Gereksinim analizi','Süreç iyileştirme','İş akışı','Dokümantasyon','YouTrack']],
+ ['02','ERP & kurumsal uygulamalar','İş birimleri ile sistemler arasında bağ.',['IFS ERP','IFS CRM','Son kullanıcı desteği','Bimser Synergy CSP','QDMS','Ensemble']],
+ ['03','Veri & entegrasyon','Veriyi anlamlı ve kullanılabilir hâle getirmek.',['SQL','PL/SQL','Oracle','MS SQL Server','Raporlama','Süreç entegrasyonu']],
+ ['04','Geliştirme & araçlar','Çözümleri teknik bir bakışla desteklemek.',['C#','HTML','CSS','Microsoft Office','Yazılım testleri']]
+]
+const works = [
+ ['ERP','IFS süreçleri ve kullanıcı desteği','Departman ihtiyaçlarının analiz edilmesi, raporların geliştirilmesi, modüllerin devreye alınması ve günlük kullanım sorunlarının çözümü.',['IFS ERP','Analiz','Raporlama']],
+ ['PORTAL','B2B & kurumsal portallar','Bayi portalında gereksinim ve test çalışmaları; lojistik, stok ve banka entegrasyonlu OTS projelerinin hayata geçirilmesi.',['B2B','Entegrasyon','Test']],
+ ['İŞ AKIŞI','Dijital süreç yönetimi','İzin, masraf, avans, satın alma ve sözleşme gibi manuel süreçlerin Bimser Synergy CSP ile dijital ortama taşınması.',['Synergy CSP','Süreç tasarımı','Dokümantasyon']]
+]
+function Arrow(){return <span aria-hidden="true">↗</span>}
+function Heading({number,label,title,children}){return <div className="section-heading"><div><p className="eyebrow">{number} / {label}</p><h2>{title}</h2></div>{children && <p>{children}</p>}</div>}
+export default function App(){
+ const [menu,setMenu]=useState(false)
+ const [active,setActive]=useState('home')
+ useEffect(()=>{const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)setActive(entry.target.id)})},{rootMargin:'-15% 0px -55% 0px'});document.querySelectorAll('main section[id]').forEach(s=>observer.observe(s));return()=>observer.disconnect()},[])
+ useEffect(()=>{const close=e=>{if(e.key==='Escape')setMenu(false)};window.addEventListener('keydown',close);return()=>window.removeEventListener('keydown',close)},[])
+ return <><a className="skip" href="#main">İçeriğe geç</a><header><div className="nav-wrap"><a className="brand" href="#home" onClick={()=>setMenu(false)} aria-label="Bayram Elpe ana sayfa">be<span>.</span></a><button className="menu-toggle" aria-label={menu?'Menüyü kapat':'Menüyü aç'} aria-expanded={menu} aria-controls="navigation" onClick={()=>setMenu(!menu)}>{menu?'Kapat ×':'Menü ☰'}</button><nav id="navigation" className={menu?'open':''} aria-label="Ana menü">{links.map(([id,label])=><a key={id} href={'#'+id} aria-current={active===id?'location':undefined} onClick={()=>setMenu(false)}>{label}</a>)}<a className="nav-cv" href="/assets/Bayram_Elpe_CV.pdf" target="_blank" rel="noreferrer">Özgeçmiş <Arrow/></a></nav></div></header>
+ <main id="main"><section id="home" className="hero wrap"><div className="hero-copy"><div className="status"><i/> MASDAF’ta İş Analisti Uzmanı</div><p className="hero-intro">Merhaba, ben Bayram Elpe.</p><h1>İş süreçlerini<br/><em>dijital çözümlere</em><br/>dönüştürüyorum<span>.</span></h1><p className="hero-description">İş analizi, IFS ERP ve süreç geliştirme deneyimimle insanların, verinin ve kurumsal sistemlerin birlikte daha iyi çalışmasını sağlıyorum.</p><div className="actions"><a className="button primary" href="#experience">Deneyimimi keşfet <Arrow/></a><a className="text-link" href="#contact">İletişime geç <span aria-hidden="true">→</span></a></div><div className="hero-meta"><span>İstanbul, Türkiye</span><span>ERP & Süreç Geliştirme</span></div></div><div className="portrait-area"><div className="portrait-label">BAYRAM ELPE <span>PORTFOLYO / 2026</span></div><div className="portrait"><img src="/assets/profile.jpg" alt="Bayram Elpe" width="600" height="720" fetchPriority="high"/><div className="portrait-caption"><span>Analizden uygulamaya.</span><span>İşin bütününe bakış.</span></div></div><div className="portrait-bottom"><span>İş ihtiyaçları</span><b aria-hidden="true">↔</b><span>Teknoloji</span></div></div></section>
+ <div className="tech-strip"><div className="wrap"><span>ODAK ALANLARIM</span><b>IFS ERP</b><i>✳</i><b>İş Analizi</b><i>✳</i><b>Synergy CSP</b><i>✳</i><b>SQL & Oracle</b></div></div>
+ <section id="about" className="wrap section"><Heading number="01" label="HAKKIMDA" title={<>İşin ihtiyacını anlıyor,<br/>çözümün yolunu çiziyorum.</>}/><div className="about-grid"><div className="about-lead">İş birimleri ile teknik ekipler arasında <em>ortak bir dil.</em></div><div className="about-copy"><p>Yönetim Bilişim Sistemleri mezunu, ERP ve süreç geliştirme alanında çalışan bir uzmanım. Kasım 2022’den bu yana kurumsal uygulamalar, veri analizi ve iş süreçlerinin dijitalleştirilmesi üzerine deneyim kazanıyorum.</p><p>İhtiyaçların anlaşılmasından gereksinimlerin dokümante edilmesine, testlerden son kullanıcı desteğine kadar çözümün her aşamasında yer alıyorum. Analitik düşünmeyi, açık iletişimi ve ekip çalışmasını önemsiyorum.</p><p>Bugün MASDAF’ta İş Analisti Uzmanı olarak IFS ERP üzerinden iş süreçlerinin analiz edilmesi, iyileştirilmesi ve geliştirilmesi üzerine çalışıyorum.</p></div></div></section>
+ <section id="expertise" className="section tinted"><div className="wrap"><Heading number="02" label="UZMANLIK" title="Birbirini tamamlayan yetkinlikler.">Süreçleri iş ihtiyacı, kullanıcı deneyimi ve teknik uygulanabilirlikle birlikte ele alıyorum.</Heading><div className="expertise-grid">{expertise.map(([n,title,desc,tags])=><article className="expertise-card" key={n}><span className="card-number">{n}<Arrow/></span><h3>{title}</h3><p>{desc}</p><div className="tags">{tags.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></div></section>
+ <section id="experience" className="wrap section"><Heading number="03" label="DENEYİM" title="Her adımda daha bütüncül bir bakış.">Kurumsal yazılım desteğinden iş analizi ve süreç geliştirmeye uzanan yolculuğum.</Heading><div className="timeline">{roles.map(role=><article className={'role '+(role.current?'current':'')} key={role.title}><div className="role-date"><span>{role.date}</span>{role.current&&<b><i/> Devam ediyor</b>}</div><div className="role-body"><h3>{role.title}</h3><p className="company">{role.company}</p><p>{role.text}</p><details open={role.current}><summary>Sorumluluklar ve çalışmalar <span aria-hidden="true">+</span></summary><ul>{role.bullets.map(b=><li key={b}>{b}</li>)}</ul></details></div></article>)}</div></section>
+ <section id="work" className="section tinted"><div className="wrap"><Heading number="04" label="ÇALIŞMA ALANLARI" title="Süreçlerden somut çözümlere.">Kurumsal deneyimim boyunca katkı sunduğum başlıca çalışma alanları.</Heading><div className="work-grid">{works.map(([label,title,desc,tags],i)=><article className="work-card" key={title}><div className={'work-visual visual-'+i} aria-hidden="true">{i===0?<><span>İŞ İHTİYACI</span><b>IFS</b><span>ANALİZ → ÇÖZÜM</span></>:i===1?<><span>BAYİ</span><b>↔</b><span>ERP</span></>:<><span>TALEP</span><b>→</b><span>ONAY</span><b>→</b><span>SONUÇ</span></>}</div><p className="eyebrow">{label}</p><h3>{title}</h3><p>{desc}</p><div className="tags">{tags.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></div></section>
+ <section className="wrap section" id="education"><Heading number="05" label="EĞİTİM" title="Deneyimin arkasındaki temel."/><div className="education-grid"><article><p className="eyebrow">LİSANS / 2022 — 2025</p><h3>Yönetim Bilişim Sistemleri</h3><p>Anadolu Üniversitesi</p><span>Açıköğretim Fakültesi</span></article><article><p className="eyebrow">ÖN LİSANS / 2019 — 2021</p><h3>Bilgisayar Programcılığı</h3><p>Ataşehir Adıgüzel Meslek Yüksekokulu</p><span>Diploma notu: 3.14 / 4 · Tam burslu</span></article></div><div className="language"><span>Yabancı dil</span><strong>İngilizce</strong><span>Orta düzey</span></div></section>
+ <section id="contact" className="contact-section"><div className="wrap"><p className="eyebrow">06 / İLETİŞİM</p><div className="contact-grid"><div><h2>İyi bir çözüm,<br/><em>iyi bir iletişimle</em> başlar.</h2><p>İş analizi, ERP ve dijital süreçler üzerine iletişime geçmek için:</p><a className="email-link" href="mailto:bayramelpe1@gmail.com">bayramelpe1@gmail.com <Arrow/></a><a className="phone" href="tel:+905307919331">+90 (530) 791 93 31</a></div><a className="cv-card" href="/assets/Bayram_Elpe_CV.pdf" download><span>DAHA YAKINDAN TANIYIN <Arrow/></span><strong>Özgeçmişimi<br/>indirin.</strong><span>PDF · Güncel özgeçmiş ↓</span></a></div></div></section>
+ </main><footer className="wrap"><a className="brand" href="#home" aria-label="Başa dön">be<span>.</span></a><span>© {new Date().getFullYear()} Bayram Elpe</span><a href="#home">Başa dön ↑</a></footer></>
 }
-
-export default App 
